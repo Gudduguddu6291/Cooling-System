@@ -6,7 +6,7 @@ import { getAuth,GoogleAuthProvider } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCUh7GtOJITNCEtArbtdmVQQ-gyyZ5LW2Q",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "cold-freezer-user-details.firebaseapp.com",
   projectId: "cold-freezer-user-details",
   storageBucket: "cold-freezer-user-details.firebasestorage.app",
