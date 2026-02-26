@@ -3,26 +3,15 @@ import Navbar from '../components/Navbar';
 import Header from '../components/Header';
 import { AnimatePresence, motion } from 'framer-motion';
 import Temperature from '../components/temperature';
+import AnalysisSection from '../components/AnalysisSection';
 import axios from 'axios';
+import { WeatherProvider } from '../context/WeatherContext';
 
 
 function Home() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // const api = async () => {
-  // try {
-  //   const key = import.meta.env.VITE_YOUR_API_KEY;
-
-  //   console.log("API KEY:", key); // Debug check
-
-   
-  //     const response = await axios.get(`https://api.tomorrow.io/v4/weather/forecast?location=22.5559,88.4875&apikey=${key}`);
-  //     console.log("API Response:", response.data); // Debug check
-  //   } catch (error) {
-  //   console.error("API call failed:", error.response?.data || error.message);
-  //   console.error("Status:", error.response?.status);
-  // }
-  // };
+  
 
   return (
     <div className="w-full min-h-screen flex bg-[#F0F4F8] overflow-hidden">
@@ -67,7 +56,10 @@ function Home() {
             className="flex-1 overflow-y-auto no-scrollbar p-6 lg:p-10"
           >
             {/* Your cards and charts go here */}
-            <Temperature/>
+            <WeatherProvider>
+              <Temperature/>
+              <AnalysisSection/>
+            </WeatherProvider>
           </motion.main>
         </motion.div>
 
