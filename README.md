@@ -25,18 +25,27 @@ Cooling System is a high-fidelity monitoring solution designed for cold chain lo
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/Gudduguddu6291/Cooling-System/.git](https://github.com/Gudduguddu6291/Cooling-System/.git)
+   git clone https://github.com/Gudduguddu6291/Cooling-System.git
+
 2. **Install Dependencies:**
    ```bash
    npm install
+
 3.**Environment Setup:**
    ```bash
    VITE_YOUR_API_KEY=your_api_key_here
    ```
-4.**Run Development Server:**
-  ```bash
-  npm run dev
-  ```
+
+4.Run Development Server:
+   ```bash
+   npm run dev
+   ```
+
+
+ 
+<img width="1347" height="645" alt="Screenshot 2026-02-26 150630" src="https://github.com/user-attachments/assets/4d2ecc9d-0008-43e6-8fc3-ed315f0baab9" />
+
+
 
 
 
