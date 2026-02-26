@@ -1,0 +1,23 @@
+# Python virtual environment
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files
+.env
+.env.*
+
+# Node modules (if MERN)
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build folders
+dist/
+build/
