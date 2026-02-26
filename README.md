@@ -26,12 +26,13 @@ Cooling System is a high-fidelity monitoring solution designed for cold chain lo
 1. **Clone the repository:**
    ```bash
    git clone [https://github.com/Gudduguddu6291/Cooling-System/.git](https://github.com/Gudduguddu6291/Cooling-System/.git)
-2. Install Dependencies:
+2. **Install Dependencies:**
+   ```bash
     npm install
-3.Environment Setup:
-  Create a .env file in the root directory:
+3.**Environment Setup:**
+  **Create a .env file in the root directory:**
   VITE_YOUR_API_KEY=your_api_key_here
-4.Run Development Server:
+4.**Run Development Server:
   npm run dev
 Gemini said
 Since you are building a Cold Storage Monitoring Service, your README should reflect the professional, mission-critical nature of the project. In cold storage, data accuracy and uptime are everything, so we should emphasize "Safety Thresholds" and "Compliance."
