@@ -27,7 +27,7 @@ export const WeatherProvider = ({ children }) => {
       );
       
       const data = response.data?.data?.values;
-      
+      console.log(data);
       if (data && data.temperature !== undefined) {
         setApiData({
           outsideTemp: data.temperature.toFixed(1),

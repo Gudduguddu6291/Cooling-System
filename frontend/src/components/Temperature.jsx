@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Thermometer, Droplets, Sun, Cpu, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useWeather } from '../context/WeatherContext'; // Ensure this path is correct
+import { useWeather } from '../context/WeatherContext'; //
+import axios from 'axios';
+import { serverUrl } from '../App';
+import { useRef } from 'react';
+
 
 const Temperature = () => {
   const { apiData } = useWeather(); // 👈 Use the global data
   const [time, setTime] = useState(new Date());
+  const [predictedTemp, setPredictedTemp] = useState("--°C");
 
   // 🕒 Logic for the clock only
   useEffect(() => {
@@ -13,6 +18,64 @@ const Temperature = () => {
     return () => clearInterval(timer);
   }, []);
 
+ const tempHistory = useRef([]);
+
+const sendToML = async (currentTemp) => {
+  try {
+
+    const temp = Number(currentTemp);
+
+    tempHistory.current.push(temp);
+
+    if (tempHistory.current.length > 3) {
+      tempHistory.current.shift();
+    }
+
+    if (tempHistory.current.length < 3) {
+      return { message: "Collecting temperature data..." };
+    }
+
+    const lag1 = tempHistory.current[2];
+    const lag2 = tempHistory.current[1];
+    const lag3 = tempHistory.current[0];
+
+    const rolling_mean = (lag1 + lag2 + lag3) / 3;
+
+    const month = new Date().getMonth() + 1;
+
+    const res = await axios.post(`${serverUrl}/api/sendtoml`, {
+      lag1,
+      lag2,
+      lag3,
+      rolling_mean,
+      month
+    },{
+      withCredentials: true
+    });
+
+    return res.data;
+
+  } catch (error) {
+    console.error("Error sending to ML:", error);
+  }
+};
+
+  // 🤖 Fetch ML prediction
+ useEffect(() => {
+  const fetchPrediction = async () => {
+    const currentTemp = Number((Math.random() * 2 + 5).toFixed(2));
+    const result = await sendToML(currentTemp);
+    if (result?.predictedTemp) {
+      setPredictedTemp(result.predictedTemp.toFixed(2) + "°C");
+    }
+  };
+
+  fetchPrediction();
+  const interval = setInterval(fetchPrediction, 10000); // every 10s
+  return () => clearInterval(interval);
+}, []);
+  // 🔮 Fetch predicted temperature on component mount
+  
   const stats = [
     { 
       label: 'Current Temp', 
@@ -46,7 +109,7 @@ const Temperature = () => {
     },
     { 
       label: 'Predicted Temp', 
-      value: '5.8°C', 
+      value: predictedTemp, 
       status: '92% Acc.', 
       icon: <Cpu size={35} />, 
       isLoading: false,
@@ -55,6 +118,8 @@ const Temperature = () => {
       dotColor: 'bg-purple-500 shadow-[0_0_12px_rgba(168,85,247,0.8)]'
     },
   ];
+
+  
 
   // 🦴 Skeleton Component inside the same file for ease
   const SkeletonCard = ({ isError }) => (
