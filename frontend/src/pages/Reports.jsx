@@ -1,20 +1,11 @@
-import React,{ useState } from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar';
 import Header from '../components/Header';
 import { AnimatePresence, motion } from 'framer-motion';
-import Temperature from '../components/temperature';
-import AnalysisSection from '../components/AnalysisSection';
-
-
-import { WeatherProvider } from '../context/WeatherContext';
-
-
-function Home() {
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-
-  
-
-  return (
+import { useState } from 'react';
+function Reports() {
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
+    return (
     <div className="w-full min-h-screen flex bg-[#F0F4F8] overflow-hidden">
       <AnimatePresence mode="wait">
         
@@ -56,11 +47,7 @@ function Home() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex-1 overflow-y-auto no-scrollbar p-6 lg:p-10"
           >
-            {/* Your cards and charts go here */}
-            <WeatherProvider>
-              <Temperature/>
-              <AnalysisSection/>
-            </WeatherProvider>
+            
           </motion.main>
         </motion.div>
 
@@ -79,6 +66,6 @@ function Home() {
   
     </div>
   );
+    
 }
-
-export default Home;
+export default Reports;

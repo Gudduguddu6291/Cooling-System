@@ -5,9 +5,10 @@ import { useWeather } from '../context/WeatherContext'; //
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { useRef } from 'react';
-
+import { useTemperature } from '../context/TemperatureContext.jsx';
 
 const Temperature = () => {
+  const { globalTemp, setGlobalTemp } = useTemperature();
   const { apiData } = useWeather(); // 👈 Use the global data
   const [time, setTime] = useState(new Date());
   const [predictedTemp, setPredictedTemp] = useState("--°C");
@@ -79,7 +80,7 @@ const sendToML = async (currentTemp) => {
   const stats = [
     { 
       label: 'Current Temp', 
-      value: '6.2°C', 
+      value: `${Number(globalTemp).toFixed(2)}°C`, 
       status: 'Stable', 
       icon: <Thermometer size={35} />, 
       isLoading: false, // Internal sensor usually instant

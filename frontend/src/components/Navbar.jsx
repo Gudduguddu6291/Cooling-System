@@ -1,8 +1,22 @@
 import React from 'react';
 import { LayoutDashboard, Database, LineChart, History, Settings2, Bell, FileText, Settings, X } from 'lucide-react';
 import { FaSnowflake } from 'react-icons/fa';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 
 const Navbar = ({ isOpen, setIsOpen }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navItems = [
+    { icon: <LayoutDashboard size={20} color="white"/>, label: 'Dashboard', path: '/' },
+    { icon: <Database size={20} color="white"/>, label: 'Add Sensor Data', path: '/add-sensor' },
+    { icon: <LineChart size={20} color="white"/>, label: 'Prediction', path: '/prediction' },
+    { icon: <History size={20} color="white"/>, label: 'Data History', path: '/history' },
+    { icon: <Settings2 size={20} color="white"/>, label: 'Control Panel', path: '/control-panel' },
+    { icon: <Bell size={20} color="white"/>, label: 'Alerts', path: '/alerts' },
+    { icon: <FileText size={20} color="white"/>, label: 'Reports', path: '/reports' },
+  ];
   return (
     <aside className={`
       /* MOBILE STYLES: Fixed, high z-index, slides in/out */
@@ -37,14 +51,20 @@ const Navbar = ({ isOpen, setIsOpen }) => {
 
       {/* NAV LINKS */}
       <nav className="flex-1 px-4 space-y-1">
-        <NavItem icon={<LayoutDashboard size={20}/>} label="Dashboard" active  className="hover:cursor-pointer"/>
-        <NavItem icon={<Database size={20}/>} label="Add Sensor Data" />
-        <NavItem icon={<LineChart size={20}/>} label="Prediction" />
-        <NavItem icon={<History size={20}/>} label="Data History" />
-        <NavItem icon={<Settings2 size={20}/>} label="Control Panel" />
-        <NavItem icon={<Bell size={20}/>} label="Alerts" />
-        <NavItem icon={<FileText size={20}/>} label="Reports" />
-        {/* <NavItem icon={<Settings size={20}/>} label="Settings" /> */}
+        {navItems.map(({ icon, label, path }) => (
+          <NavItem
+            key={label}
+            icon={icon}
+            label={label}
+            active={location.pathname === path}
+            onClick={() => {
+              if (path) {
+                navigate(path);
+                setIsOpen(false);
+              }
+            }}
+          />
+        ))}
       </nav>
 
       {/* SYSTEM STATUS CARD (Visible on all devices) */}
@@ -64,8 +84,9 @@ const Navbar = ({ isOpen, setIsOpen }) => {
 };
 
 // Helper component for cleaner code
-const NavItem = ({ icon, label, active = false }) => (
+const NavItem = ({ icon, label, active = false, onClick }) => (
   <button
+    onClick={onClick}
     className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all ${
       active
         ? "bg-blue-600/20 text-white shadow-md shadow-blue-500/20"

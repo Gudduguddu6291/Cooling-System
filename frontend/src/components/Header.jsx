@@ -51,23 +51,7 @@ const Header = ({ setIsOpen }) => {
       <Menu size={24} />
     </button>
 
-    <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
-      <button className="bg-blue-600/20 border border-blue-500/50 px-4 py-2 rounded-xl flex items-center gap-2">
-        <LayoutDashboard size={16} /> Dashboard
-      </button>
-
-      <button className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
-        <Database size={16} /> Add Data
-      </button>
-
-      <button className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
-        <History size={16} /> History
-      </button>
-
-      <button className="text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
-        <Settings2 size={16} /> Control Panel
-      </button>
-    </nav>
+   
   </div>
 
   {/* Right Section */}
