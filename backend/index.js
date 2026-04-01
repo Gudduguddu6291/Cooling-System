@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.routes.js"
 import cookieParser from "cookie-parser"
 import userRouter from "./routes/user.route.js"
 import sendToMLRouter from "./routes/sendToMLRouter.js"
+import tempRouter from "./routes/temp.route.js"
 dotenv.config();
 const app=express();
 connectDB();
@@ -22,6 +23,7 @@ app.get("/",(req,res)=>{
 app.use("/api/auth",authRouter);
 app.use("/api/user",userRouter);
 app.use("/api/sendtoml",sendToMLRouter);
+app.use("/api/sensors",tempRouter);
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
 })

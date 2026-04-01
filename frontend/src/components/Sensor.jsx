@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Bluetooth, Search, Database, CheckCircle, Plus, X, Thermometer } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; // 1. Import Navigate
 import { useTemperature } from '../context/TemperatureContext'; // 2. Ensure path is correct
+import axios from 'axios';
+import { serverUrl } from '../App';
 
 const AddSensorPage = () => {
   const navigate = useNavigate(); // Initialize navigation
@@ -11,20 +13,35 @@ const AddSensorPage = () => {
   
   // 3. Use ONLY the global state (Remove the local const [temp])
   const { globalTemp, setGlobalTemp } = useTemperature();
+  const safeGlobalTemp = globalTemp ?? -4;
 
   // Helper to change temperature text color based on safety
   const getTempColorClass = () => {
-    if (globalTemp <= -10) return 'text-blue-500'; // Optimal Cold
-    if (globalTemp <= 4) return 'text-emerald-500'; // Chilled
+    if (safeGlobalTemp <= 0) return 'text-emerald-500'; // Chilled
+    if (safeGlobalTemp <= 5) return 'text-blue-500'; // Optimal Cold
     return 'text-orange-500'; // Warning/Warm
   };
 
   // 4. Handle the "Initialize" click
-  const handleInitialize = (e) => {
+  const handleInitialize = async (e) => {
+    try{
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const payload = {
+      nickname: formData.get('nickname'),
+      zone: formData.get('zone'),
+      targetTemp: globalTemp,
+      serialNo: formData.get('serialNo'),
+    };
+
+    const res = await axios.post(`${serverUrl}/api/sensors`, payload, { withCredentials: true });
     // The temperature is already saved in globalTemp via the slider
     // Now we just push the user to the display page
     navigate('/'); 
+    console.log("Sensor initialized with temp:", globalTemp);
+    } catch (error) {
+      console.error("Error initializing sensor:", error);
+    }
   };
 
   return (
@@ -102,67 +119,61 @@ const AddSensorPage = () => {
         </div>
 
         {/* RIGHT COLUMN: MANUAL CONFIGURATION */}
-        <div className={`border rounded-2xl p-6 transition-all duration-500 bg-white ${activeMode !== 'manual' ? 'opacity-30 grayscale pointer-events-none scale-[0.98]' : 'opacity-100 shadow-md border-blue-100'}`}>
-          <h3 className="text-lg font-semibold mb-6 flex items-center text-slate-700 ">
-            <Thermometer className="w-5 h-5 mr-2 text-blue-600" />
-            Manual Setup
-          </h3>
-          
-          {/* 5. Link form to the handleInitialize function */}
-          <form className="space-y-5" onSubmit={handleInitialize}>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Nickname</label>
-                <input type="text" placeholder="Cold Zone 1" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm outline-none" required />
-              </div>
-              <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Zone</label>
-                <select className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm outline-none cursor-pointer">
-                  <option>Main Freezer</option>
-                  <option>Warehouse A</option>
-                </select>
-              </div>
-            </div>
+        {/* RIGHT COLUMN: MANUAL CONFIGURATION */}
+<div className={`border rounded-2xl p-6 transition-all duration-500 bg-white ${activeMode !== 'manual' ? 'opacity-30 grayscale pointer-events-none scale-[0.98]' : 'opacity-100 shadow-md border-blue-100'}`}>
+  <h3 className="text-lg font-semibold mb-6 flex items-center text-slate-700 ">
+    <Thermometer className="w-5 h-5 mr-2 text-blue-600" />
+    Manual Setup
+  </h3>
+  
+  <form className="space-y-5" onSubmit={handleInitialize}>
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Nickname</label>
+        <input name="nickname" type="text" placeholder="Cold Zone 1" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm outline-none" required />
+      </div>
+      <div>
+        <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Zone</label>
+        <select name="zone" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm outline-none cursor-pointer">
+          <option>Main Freezer</option>
+        </select>
+      </div>
+    </div>
 
-            {/* DYNAMIC TEMPERATURE SLIDER */}
-            <div className="bg-[#0B1A3D]/5 p-5 rounded-2xl border border-blue-50">
-              <div className="flex justify-between items-center mb-4">
-                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Target Temp</label>
-                <span className={`font-mono font-black text-xl px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-100 ${getTempColorClass()}`}>
-                  {globalTemp}°C
-                </span>
-              </div>
-              
-              <input 
-                type="range" 
-                min="-40" 
-                max="25" 
-                value={globalTemp}
-                onChange={(e) => setGlobalTemp(e.target.value)} // Updates Global Context
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0B1A3D]"
-              />
-            </div>
+    {/* DYNAMIC TEMPERATURE SLIDER */}
+    <div className="bg-[#0B1A3D]/5 p-5 rounded-2xl border border-blue-50">
+      <div className="flex justify-between items-center mb-4">
+        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Target Temp</label>
+        <span className={`font-mono font-black text-xl px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-100 ${getTempColorClass()}`}>
+          {safeGlobalTemp}°C
+        </span>
+      </div>
+      
+      <input 
+        type="range" 
+        min="-4" 
+        max="10" 
+        value={safeGlobalTemp}
+        onChange={(e) => setGlobalTemp(Number(e.target.value))} 
+        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0B1A3D]"
+      />
+    </div>
 
-            <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1 text-slate-400">Sensor ID / Serial No.</label>
-              <input type="text" placeholder="SC-92-XP-01" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm outline-none" required />
-            </div>
+    <div className="mb-6">
+      <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1.5 ml-1">Sensor ID / Serial No.</label>
+      <input name="serialNo" type="text" placeholder="SC-92-XP-01" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm outline-none" required />
+    </div>
 
-            <div className="flex items-center space-x-4 pt-4">
-              <button type="button" onClick={() => navigate(-1)} className="flex-1 py-3.5 border border-gray-200 rounded-xl text-gray-500 text-sm font-bold uppercase tracking-tight">
-                Cancel
-              </button>
-              
-              <button 
-                type="submit" 
-                className="flex-[2] py-3.5 bg-[#0B1A3D] text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-900/30 flex items-center justify-center group"
-              >
-                <Plus className="w-4 h-4 mr-2 group-hover:scale-125 transition-transform" />
-                Initialize at {globalTemp}°C
-              </button>
-            </div>
-          </form>
-        </div>
+    {/* --- NEW INITIALIZE BUTTON --- */}
+    <button 
+      type="submit"
+      className="w-full bg-[#0B1A3D] hover:bg-blue-900 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group"
+    >
+      <CheckCircle className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+      Initialize Temperature System
+    </button>
+  </form>
+</div>
 
       </div>
     </div>

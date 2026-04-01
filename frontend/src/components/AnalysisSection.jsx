@@ -2,9 +2,10 @@ import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { BrainCircuit, TrendingDown, ShieldCheck } from 'lucide-react';
 import { useWeather } from '../context/WeatherContext'; // Using your global state
-
+import { useTemperature } from '../context/TemperatureContext.jsx'; // Using your global state
 const AnalysisSection = () => {
   const { apiData } = useWeather();
+  const { globalTemp, predicted } = useTemperature();
 
   // Mock Trend data - in a real app, you'd calculate this from API history
   const chartData = [
@@ -71,7 +72,7 @@ const AnalysisSection = () => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-[8px] font-black text-blue-300 uppercase tracking-widest">Expected 4H</p>
-              <h4 className="text-2xl font-mono font-bold">5.4°C</h4>
+              <h4 className="text-2xl font-mono font-bold">{predicted}°C</h4>
             </div>
             <div className="text-right">
               <div className="flex items-center justify-end gap-1 text-emerald-400 text-[10px] font-bold">
