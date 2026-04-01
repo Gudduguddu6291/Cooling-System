@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Header from '../components/Header';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
+import Predgraph from '../components/Predgraph';
 function Prediction() {
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     return (
@@ -47,7 +48,7 @@ function Prediction() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex-1 overflow-y-auto no-scrollbar p-6 lg:p-10"
           >
-            
+            <Predgraph/>
           </motion.main>
         </motion.div>
 
